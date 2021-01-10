@@ -1,12 +1,17 @@
 package com.example.ezyfoody;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -15,8 +20,14 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -24,10 +35,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LatLng currentLocation;
 
+    private Context context;
+    private DatabaseReference database;
+    private TextView currRestaurantTxt;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        context = this;
+        database = FirebaseDatabase.getInstance().getReference();
+        currRestaurantTxt = findViewById(R.id.current_restaurant);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -59,8 +79,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     public void onSuccess(Location location) {
                         if(location != null){
                             currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location Marker"));
+//                            mMap.addMarker(new MarkerOptions().position(currentLocation).title("Current Location Marker"));
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLocation));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 12.0f));
+                            getClosestRestaurant(location.getLatitude(), location.getLongitude());
+
+                            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                                @Override
+                                public boolean onMarkerClick(Marker marker) {
+                                    marker.getTitle();
+                                    database.child("user").child("preferred_restaurant").setValue(marker.getTitle());
+                                    currRestaurantTxt.setText(marker.getTitle());
+                                    return false;
+                                }
+                            });
                         }
                     }
                 });
@@ -69,9 +101,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(-34, 151);
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void getClosestRestaurant(final Double currentlat, final Double currentlong){
+        //get closest restaurant
+        database.child("restaurants").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                float minDistance = 0;
+                Integer closestRestaurantId = 1;
+                for (DataSnapshot data: snapshot.getChildren()) {
+                    LatLng marker = new LatLng(Double.parseDouble(data.child("latitude").getValue().toString()), Double.parseDouble(data.child("longitude").getValue().toString()));
+                    mMap.addMarker(new MarkerOptions().position(marker).title(data.child("name").getValue().toString()));
+
+                    float[] distance = new float[1];
+                    Location.distanceBetween(currentlat, currentlong, marker.latitude, marker.longitude, distance);
+                    if(distance[0] < minDistance){
+                        minDistance=distance[0];
+                        closestRestaurantId = Integer.parseInt(data.getKey());
+                    }
+                }
+                database.child("user").child("preferred_restaurant").setValue(snapshot.child(closestRestaurantId.toString()).child("name").getValue().toString());
+                currRestaurantTxt.setText(snapshot.child(closestRestaurantId.toString()).child("name").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void backToOrder(View view){
+        String stringToPassBack = currRestaurantTxt.getText().toString();
+        Intent intent = new Intent();
+        intent.putExtra("restaurant", stringToPassBack);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 }

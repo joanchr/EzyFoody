@@ -21,21 +21,21 @@
         android:textColor="@color/dark_gray"
         android:onClick="redirectToMyOrderActivity"
         />
-    <TextView
-        android:id="@+id/balance"
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/main_button_transactions"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Balance: "
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:text="transactions"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toLeftOf="@id/main_button_my_order"
-        app:layout_constraintTop_toTopOf="@id/main_button_my_order"
-        app:layout_constraintBottom_toBottomOf="@id/main_button_my_order"
-        android:textSize="24sp"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        android:layout_margin="5dp"
-        android:textColor="@color/dark_orange"/>
-
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="24dp"
+        android:layout_marginHorizontal="3dp"
+        android:drawableTop="@drawable/ic_baseline_shopping_basket"
+        android:background="@drawable/button_background_outline_only"
+        android:textColor="@color/dark_gray"
+        android:onClick="redirectToTransactionsActivity"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -47,10 +47,10 @@
         android:paddingHorizontal="7dp"
         android:paddingVertical="7dp">
         <TextView
-            android:id="@+id/main_text_view_title"
+            android:id="@+id/balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hungry"
+            android:text="Balance: "
             android:textSize="20sp"
             android:paddingHorizontal="20dp"
             android:paddingVertical="5dp"/>

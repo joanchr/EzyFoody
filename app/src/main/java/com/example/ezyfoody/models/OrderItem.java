@@ -39,6 +39,11 @@ public class OrderItem extends Item {
         this.id = id;
     }
 
+    public OrderItem(String name, Integer price, Integer quantity) {
+        super(name, price);
+        this.quantity = quantity;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         super.writeToParcel(parcel, i);

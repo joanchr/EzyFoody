@@ -61,4 +61,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MyOrderActivity.class);
         startActivity(intent);
     }
+    public void redirectToTransactionsActivity(View view){
+        Intent intent = new Intent(this, TransactionActivity.class);
+        startActivity(intent);
+    }
 }

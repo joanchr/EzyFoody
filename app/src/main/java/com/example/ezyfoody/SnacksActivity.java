@@ -47,7 +47,13 @@ public class SnacksActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot data: snapshot.getChildren()) {
-                    snacks.add(new Item(data.child("name").getValue().toString(), Integer.parseInt(data.child("price").getValue().toString())));
+                    snacks.add(new Item(
+                            data.child("name").getValue().toString(),
+                            Integer.parseInt(data.child("price").getValue().toString()),
+                            Integer.parseInt(data.child("stock").getValue().toString()),
+                            "snack",
+                            Integer.parseInt(data.getKey())
+                    ));
 
                     recyclerView = (RecyclerView) findViewById(R.id.snacks_recyclerview);
                     adapter = new ItemAdapter(snacks);
