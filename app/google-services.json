@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "423397681967",
+    "firebase_url": "https://ezyfoody-98457-default-rtdb.firebaseio.com",
+    "project_id": "ezyfoody-98457",
+    "storage_bucket": "ezyfoody-98457.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:423397681967:android:7e2fadcfceabbbfe98cfda",
+        "android_client_info": {
+          "package_name": "com.example.ezyfoody"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "423397681967-stk04eu1t3p96ktsipr431os9csb0hc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaPDRNUwsne3Sg-R0Sqn1XCx2JndYR0Lc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "423397681967-stk04eu1t3p96ktsipr431os9csb0hc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
