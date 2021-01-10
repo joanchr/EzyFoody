@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ezyfoody.adapters.CompleteOrderItemAdapter;
 import com.example.ezyfoody.models.OrderItem;
@@ -40,6 +41,11 @@ public class TopUpActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void topUp(final View view){
+        if(Integer.parseInt(amountEt.getText().toString()) > 2000000){
+            Toast.makeText(context, "Maximum top up is Rp 2000000", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         database.child("user").child("money").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
